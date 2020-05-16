@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns2:application xmlns:ns2="http://wadl.dev.java.net/2009/02"><ns2:doc
+        jersey:generatedBy="Jersey: 1.19.4 05/24/2017 03:20 PM"
+        xmlns:jersey="http://jersey.java.net/"/><ns2:doc
+        title="Some other WADL"
+            xml:lang="en"><![CDATA[
+        This does not document the current REST API provided by Jira.
+    ]]></ns2:doc></ns2:application>
