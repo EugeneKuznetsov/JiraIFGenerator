@@ -9,8 +9,7 @@ def main(wadl_file: str, output_dir: str):
     validate_args(wadl_file, output_dir)
     endpoints = ResourceParser(wadl_file).get_endpoints()
     for endpoint in endpoints:
-        for sub_endpoint in endpoint['sub_resources']:
-            print(sub_endpoint)
+        print(endpoint)
 
 
 def validate_args(wadl_file: str, output_dir: str):

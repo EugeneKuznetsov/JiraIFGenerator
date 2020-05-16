@@ -12,13 +12,15 @@ class ResourceParser:
             self.__is_jira_wadl()
         except ParseError as error:
             raise ParserException('WADL resource parser error: {}'.format(error.msg))
+        except FileNotFoundError as error:
+            raise ParserException('WADL file not found error')
 
     def get_endpoints(self) -> list:
-        return self.__traverse_resources(self.__get_resource_container())
+        return self.__traverse_resources(self.__get_resource_container())[0]['sub_resources']
 
     def __is_jira_wadl(self):
         for child in self.__document.getroot():
-            if child.attrib.get('title') and 'Jira' in child.attrib['title']:
+            if child.attrib.get('title') and 'jira' in child.attrib['title'].lower():
                 return
         raise ParserException('Provided WADL document is invalid')
 
@@ -107,9 +109,9 @@ class ResourceParser:
         for child in parent:
             tag = self.__get_tag(child)
             if 'representation' == tag:
-                if response.get('representation') is not None:
-                    logging.warning('Unexpected amount (more than 1) of representation when parsing response')
-                response['representation'] = self.__parse_representation(child)
+                if response.get('representations') is None:
+                    response['representations'] = []
+                response['representations'].append(self.__parse_representation(child))
             elif 'doc' == tag:
                 if response.get('doc') and child.text:
                     logging.warning('Unexpected amount (more than 1) of doc when parsing response')
