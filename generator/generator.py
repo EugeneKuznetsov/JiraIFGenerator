@@ -3,13 +3,26 @@ from argparse import ArgumentParser
 from pathlib import Path
 from common.errors import GeneratorException
 from parser.jirawadl import ResourceParser
+from parser.resourcebundle import Bundle
 
 
 def main(wadl_file: str, output_dir: str):
     validate_args(wadl_file, output_dir)
-    endpoints = ResourceParser(wadl_file).get_endpoints()
-    for endpoint in endpoints:
-        print(endpoint)
+    resources = ResourceParser(wadl_file).get_resources()
+    endpoints = Bundle().pack(resources)
+    for i, endpoint in enumerate(endpoints.keys()):
+        print('{}) {}'.format(i, endpoint))
+        for method in endpoints[endpoint]:
+            if method.get('doc'):
+                print('\t\t{}'.format(method['doc'].replace('\n', '')))
+            print('\t[{}] {} -> {}'.format(method['name'], method['id'], method['path']))
+            if method.get('parameters'):
+                for parameter in method['parameters']:
+                    print('\t\tQuery Parameter: {}'.format(parameter))
+            if method.get('request') and method['request'].get('parameters'):
+                for parameter in method['request']['parameters']:
+                    print('\t\tRequest Parameter: {}'.format(parameter))
+        print()
 
 
 def validate_args(wadl_file: str, output_dir: str):
