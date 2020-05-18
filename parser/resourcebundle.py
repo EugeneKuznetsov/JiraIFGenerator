@@ -1,6 +1,6 @@
 class Bundle:
-    __common_paths: list
-    __base_path: str
+    __common_paths = []
+    __base_path = ''
 
     def __init__(self, base_path: str = '/rest/', common_paths=None):
         if common_paths is None:
@@ -15,8 +15,9 @@ class Bundle:
             resource_path = self.__base_path + resource['uri']
             for common_path in self.__common_paths:
                 endpoint_name = endpoint_name.replace(common_path, '')
+            # /api/2 resource
             if endpoint_name == '':
-                endpoint_name = 'global_'
+                endpoint_name = 'Api2'
             endpoint_name = endpoint_name.split('/', maxsplit=1)[0]
             self.__patch_root_methods(resource, resource_path)
             if packed.get(endpoint_name) is None:
