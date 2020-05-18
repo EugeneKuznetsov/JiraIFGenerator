@@ -1,5 +1,7 @@
 import re
 from common.errors import UnsupportedParameterTypeException, UnsupportedParameterStyleException
+import json
+
 
 
 class Endpoint:
@@ -68,7 +70,7 @@ class Endpoint:
 
     def __parse_source(self):
         source = self.__generate_disclaimer()
-        source += '#include "{}"\n\n'.format(self.header_filename)
+        source += '#include <QUrlQuery>\n#include "network/reply.h"\n#include "{}"\n\n'.format(self.header_filename)
         source += 'GeneratedEndpoints::{}::{}(const QJSValue &callback)\n'.format(self.class_name, self.class_name)
         source += '    : Endpoint(callback)\n{\n}\n\n'
         slots = []
@@ -125,6 +127,12 @@ class Endpoint:
                         break
             base_uri = 'QString({}).{}'.format(base_uri, '.'.join(args))
         impl += '    setBaseUri(QUrl({}));\n'.format(base_uri)
+        impl += self.__parse_source_slot_impl_parameters(method)
+        impl += self.__parse_source_slot_impl_connection(method)
+        return impl
+
+    def __parse_source_slot_impl_parameters(self, method: dict) -> str:
+        impl = ''
         if method.get('request') and method['request'].get('parameters'):
             query_parameters = []
             header_parameters = []
@@ -146,7 +154,7 @@ class Endpoint:
                 else:
                     raise UnsupportedParameterStyleException(parameter['style'])
             if len(query_parameters):
-                query_parameters = '    QUrlQuery query({\n        ' + ',\n        '\
+                query_parameters = '    QUrlQuery query({\n        ' + ',\n        ' \
                     .join(query_parameters) + '\n    });\n'
                 impl += query_parameters
                 impl += ''.join(remove_empty)
@@ -155,21 +163,53 @@ class Endpoint:
                 for header in header_parameters:
                     for header_key, header_value in header.items():
                         impl += '    setHeader("{}", {});\n'.format(header_key, header_value)
-        impl += '    /* {} */'.format(method['name'])
+        return impl
+
+    def __parse_source_slot_impl_connection(self, method: dict) -> str:
+        method_name = self.__cleanup_method_name(method['id'])
+        method_name = method_name[0].capitalize() + method_name[1:]
+        pre_request_method_name = 'on{}Request()'.format(method_name)
+        impl = '    connect({}, &Reply::ready, [this](const int statusCode, const QByteArray &data)'\
+            .format(pre_request_method_name) + ' {\n'
+        status_map = []
+        impl += '        const StatusMap codes = {\n'
+        if method.get('responses'):
+            for response in method['responses']:
+                status = response['status']
+                success = 'true' if status.startswith('2') or status.startswith('3') else 'false'
+                status_map.append('{' + status + ', ' + success + '}')
+
+            indent = '            '
+            impl += indent
+            impl += (',\n' + indent).join(status_map)
+            impl += '\n'
+        impl += '        };\n'
+        impl += '        auto successStatus = codes.find(statusCode);\n'
+        impl += '        if (successStatus != codes.cend() && successStatus.value())\n'
+        impl += '            callback(statusCode, data, codes, on{}Success(data));\n'.format(method_name)
+        impl += '        else\n'
+        impl += '            callback(statusCode, data, codes, on{}Error(data));\n'.format(method_name)
+        impl += '    });'
         return impl
 
     def __parse_source_pre_request(self, method: dict) -> str:
         http_method = method['name']
-        method_name = method['id']
+        method_name = self.__cleanup_method_name(method['id'])
         method_name = method_name[0].capitalize() + method_name[1:]
-        request = 'Reply *GeneratedEndpoints::{}::on{}Request(/*{}*/)\n'\
+        request = 'Reply *GeneratedEndpoints::{}::on{}Request(/* {} */)\n'\
             .format(self.class_name, method_name, http_method)
         request += '{\n'
-        request += '\n}'
+        if http_method == 'POST' or http_method == 'PUT':
+            request += '    return nullptr;\n'
+        elif http_method == 'GET':
+            request += '    return get();\n'
+        elif http_method == 'DELETE':
+            request += '    return deleteResource();\n'
+        request += '}'
         return request
 
     def __parse_source_method_success(self, method: dict) -> str:
-        method_name = method['id']
+        method_name = self.__cleanup_method_name(method['id'])
         method_name = method_name[0].capitalize() + method_name[1:]
         impl = 'QJSValueList GeneratedEndpoints::{}::on{}Success(const QByteArray &data)\n'\
             .format(self.class_name, method_name)
@@ -179,7 +219,7 @@ class Endpoint:
         return impl
 
     def __parse_source_method_error(self, method: dict) -> str:
-        method_name = method['id']
+        method_name = self.__cleanup_method_name(method['id'])
         method_name = method_name[0].capitalize() + method_name[1:]
         impl = 'QJSValueList GeneratedEndpoints::{}::on{}Error(const QByteArray &data)\n' \
             .format(self.class_name, method_name)
@@ -192,23 +232,21 @@ class Endpoint:
         return '/***\n* Jira Interface Generator v{}.{}\n*\n* Automatically generated Endpoint\n*/\n\n'\
             .format(self.__generator_version['major'], self.__generator_version['minor'])
 
-    @staticmethod
-    def __parse_header_pre_request(method: dict) -> str:
+    def __parse_header_pre_request(self, method: dict) -> str:
         http_method = method['name']
-        method_name = method['id']
+        method_name = self.__cleanup_method_name(method['id'])
         method_name = method_name[0].capitalize() + method_name[1:]
-        request = 'virtual Reply *on{}Request(/*{}*/);'.format(method_name, http_method)
+        pure_virtual = ' = 0' if http_method == 'POST' or http_method == 'PUT' else ''
+        request = 'virtual Reply *on{}Request(/* HTTP {} */){};'.format(method_name, http_method, pure_virtual)
         return request
 
-    @staticmethod
-    def __parse_header_method_success(method: dict) -> str:
-        method_name = method['id']
+    def __parse_header_method_success(self, method: dict) -> str:
+        method_name = self.__cleanup_method_name(method['id'])
         method_name = method_name[0].capitalize() + method_name[1:]
         return 'virtual QJSValueList on{}Success(const QByteArray &data);'.format(method_name)
 
-    @staticmethod
-    def __parse_header_method_error(method: dict) -> str:
-        method_name = method['id']
+    def __parse_header_method_error(self, method: dict) -> str:
+        method_name = self.__cleanup_method_name(method['id'])
         method_name = method_name[0].capitalize() + method_name[1:]
         return 'virtual QJSValueList on{}Error(const QByteArray &data);'.format(method_name)
 
