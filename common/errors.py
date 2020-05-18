@@ -17,3 +17,13 @@ class GeneratorException(Exception):
 class ParserException(GeneratorException):
     def __init__(self, text: str = ''):
         super().__init__(text, 2)
+
+
+class UnsupportedParameterTypeException(GeneratorException):
+    def __init__(self, text: str = ''):
+        super().__init__('Unsupported parameter type: {}'.format(text), 3)
+
+
+class UnsupportedParameterStyleException(GeneratorException):
+    def __init__(self, text: str = ''):
+        super().__init__('Unsupported parameter style: {}'.format(text), 3)
