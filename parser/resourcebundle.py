@@ -15,10 +15,10 @@ class Bundle:
             resource_path = self.__base_path + resource['uri']
             for common_path in self.__common_paths:
                 endpoint_name = endpoint_name.replace(common_path, '')
+            endpoint_name = endpoint_name.split('/', maxsplit=1)[0]
             # /api/2 resource
             if endpoint_name == '':
                 endpoint_name = 'Api2'
-            endpoint_name = endpoint_name.split('/', maxsplit=1)[0]
             self.__patch_root_methods(resource, resource_path)
             if packed.get(endpoint_name) is None:
                 packed[endpoint_name] = []
