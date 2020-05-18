@@ -15,7 +15,7 @@ class ResourceParser:
         except FileNotFoundError as error:
             raise ParserException('WADL file not found error')
 
-    def get_endpoints(self) -> list:
+    def get_resources(self) -> list:
         return self.__traverse_resources(self.__get_resource_container())[0]['sub_resources']
 
     def __is_jira_wadl(self):
