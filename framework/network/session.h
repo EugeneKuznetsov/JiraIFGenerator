@@ -15,8 +15,12 @@ class Session : public QObject
 public:
     Session(const QUrl &server, QNetworkAccessManager *network, QObject *parent);
 
+    const QUrl &getServer() const;
+
     Reply *get(const QUrl &uri, const QMap<QByteArray, QByteArray> &headers);
     Reply *post(const QUrl &uri, const QByteArray &payload, const QMap<QByteArray, QByteArray> &headers);
+    Reply *put(const QUrl &uri, const QByteArray &payload, const QMap<QByteArray, QByteArray> &headers);
+    Reply *deleteResource(const QUrl &uri, const QMap<QByteArray, QByteArray> &headers);
 
 signals:
     void networkError(const QString &errorText);
