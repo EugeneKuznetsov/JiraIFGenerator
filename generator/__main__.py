@@ -1,4 +1,5 @@
 import logging as log
+from os import getcwd
 from argparse import ArgumentParser
 from pathlib import Path
 from common.errors import GeneratorException
@@ -21,14 +22,18 @@ class EndpointGenerator:
             header_file.write(endpoint.header_content)
         with open(self.__output_dir + endpoint.source_filename, 'w') as source_file:
             source_file.write(endpoint.source_content)
+        with open(self.__output_dir + endpoint.cmake_filename, 'w') as cmake_file:
+            cmake_file.write(endpoint.cmake_content)
 
 
 def main(wadl_file: str, output_dir: str):
     validate_args(wadl_file, output_dir)
     resources = ResourceParser(wadl_file).get_resources()
     endpoints = Bundle().pack(resources)
+    framework_path = getcwd() + '/framework'
     for name, methods in endpoints.items():
-        EndpointGenerator(Endpoint(name, methods, {'major': 0, 'minor': 2}), output_dir).generate()
+        endpoint = Endpoint(name, methods, {'major': 0, 'minor': 2}, framework_path, output_dir)
+        EndpointGenerator(endpoint, output_dir).generate()
 
 
 def validate_args(wadl_file: str, output_dir: str):

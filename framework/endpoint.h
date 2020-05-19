@@ -12,7 +12,7 @@ class Endpoint : public QObject
     Q_PROPERTY(QJSValue callback READ getCallback WRITE setCallback NOTIFY callbackChanged)
 
 protected:
-    Endpoint(const QJSValue &callback, Session *parent);
+    Endpoint(const QJSValue &callback, Session *parent, QJSEngine *jsEng, QQmlEngine *qmlEng);
 
     void setHeader(const QByteArray &header, const QByteArray &value);
     void setBaseUri(const QUrl &uri);
@@ -20,12 +20,14 @@ protected:
 
     Reply *post(const QByteArray &payload);
     Reply *get();
+    Reply *put(const QByteArray &payload);
+    Reply *deleteResource();
 
     void callback(const int statusCode, const QByteArray &data, const QMap<int, bool> &codes, const QJSValueList &arguments);
 
     template <typename T>
     QJSValue jsArg(const T &value) {
-        return qjsEngine(parent())->toScriptValue(value);
+        return m_jsEngine->toScriptValue(value);
     }
 
 signals:
@@ -43,5 +45,7 @@ private:
     QUrl                         m_baseUri;
     QJSValue                     m_callback;
     Session                      *m_session;
+    QJSEngine                    *m_jsEngine;
+    QQmlEngine                   *m_qmlEngine;
 };
 

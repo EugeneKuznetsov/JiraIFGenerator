@@ -1,25 +1,48 @@
 import re
 from common.errors import UnsupportedParameterTypeException, UnsupportedParameterStyleException
-import json
+
 
 class Endpoint:
     header_filename = ''
     source_filename = ''
+    cmake_filename = ''
     header_content = ''
     source_content = ''
+    cmake_content = ''
     class_name = ''
+    cmake_var = ''
     __methods = []
     __generator_version = {'major': 0, 'minor': 0}
+    __framework_path = ''
+    __output_dir = ''
 
-    def __init__(self, name: str, methods: list, version: dict):
+    def __init__(self, name: str, methods: list, version: dict, framework_path: str, output_dir: str):
         self.__generator_version = version
         self.__methods = methods
+        self.__framework_path = framework_path
+        self.__output_dir = output_dir
         name = self.__cleanup_file_name(name)
-        self.header_filename = name + '.h'
-        self.source_filename = name + '.cpp'
-        self.class_name = self.__cleanup_class_name(name)
+        self.header_filename = name + 'endpointproxy.h'
+        self.source_filename = name + 'endpointproxy.cpp'
+        self.cmake_filename = name + 'endpointproxy.cmake'
+        self.cmake_var = 'generated_' + name + 'endpointproxy'
+        self.class_name = self.__cleanup_class_name(name) + 'EndpointProxy'
         self.__parse_header()
         self.__parse_source()
+        self.__generate_cmake()
+
+    def __generate_cmake(self):
+        cmake = self.__generate_cmake_disclaimer()
+        cmake += 'cmake_minimum_required(VERSION 3.16)\n\n'
+        framework_files = ['endpoint.h', 'endpoint.cpp',
+                           'network/reply.h', 'network/reply.cpp',
+                           'network/session.h', 'network/session.cpp',
+                           'types/responsestatus.h', 'types/responsestatus.cpp']
+        framework_files = [self.__framework_path + '/' + framework_file for framework_file in framework_files]
+        generated_files = [self.__output_dir + '/' + self.header_filename,
+                           self.__output_dir + '/' + self.source_filename] + framework_files
+        cmake += 'set({}\n    {})\n'.format(self.cmake_var, '\n    '.join(generated_files))
+        self.cmake_content = cmake
 
     def __parse_header(self):
         header = self.__generate_disclaimer()
@@ -27,7 +50,8 @@ class Endpoint:
         header += 'class Session;\n\n'
         header += 'class {} : public Endpoint\n'.format(self.class_name)
         header += '{\n    Q_OBJECT\n\nprotected:\n    ' + self.class_name
-        header += '(const QJSValue &callback, Session *session);\n\npublic slots:\n'
+        header += '(const QJSValue &callback, Session *session, QJSEngine *jsEng, QQmlEngine *qmlEng);\n\n'
+        header += 'public slots:\n'
         slots = []
         slot_buddies = []
         for method in self.__methods:
@@ -71,8 +95,9 @@ class Endpoint:
         source = self.__generate_disclaimer()
         source += '#include "session.h"\n#include "reply.h"\n'
         source += '#include "{}"\n\n'.format(self.header_filename)
-        source += '{}::{}(const QJSValue &callback, Session *session)\n'.format(self.class_name, self.class_name)
-        source += '    : Endpoint(callback, session)\n{\n}\n\n'
+        source += '{}::{}(const QJSValue &callback, Session *session, QJSEngine *jsEng, QQmlEngine *qmlEng)\n'\
+            .format(self.class_name, self.class_name)
+        source += '    : Endpoint(callback, session, jsEng, qmlEng)\n{\n}\n\n'
         slots = []
         slot_buddies = []
         for method in self.__methods:
@@ -233,6 +258,10 @@ class Endpoint:
 
     def __generate_disclaimer(self) -> str:
         return '/***\n* Jira Interface Generator v{}.{}\n*\n* Automatically generated Endpoint\n*/\n\n'\
+            .format(self.__generator_version['major'], self.__generator_version['minor'])
+
+    def __generate_cmake_disclaimer(self) -> str:
+        return '#\n# Jira Interface Generator v{}.{}\n#\n# Automatically generated CMake file for Endpoint\n#\n\n'\
             .format(self.__generator_version['major'], self.__generator_version['minor'])
 
     def __parse_header_pre_request(self, method: dict) -> str:

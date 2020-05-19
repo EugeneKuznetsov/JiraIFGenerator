@@ -3,11 +3,13 @@
 #include "responsestatus.h"
 #include "endpoint.h"
 
-Endpoint::Endpoint(const QJSValue &callback, Session *parent)
+Endpoint::Endpoint(const QJSValue &callback, Session *parent, QJSEngine *jsEng, QQmlEngine *qmlEng)
     : QObject(parent)
     , m_headers({{"X-Atlassian-Token", "no-check"}})
     , m_callback(callback)
     , m_session(parent)
+    , m_jsEngine(jsEng)
+    , m_qmlEngine(qmlEng)
 {
 }
 
@@ -36,15 +38,25 @@ Reply *Endpoint::get()
     return adoptReply(m_session->get(m_baseUri, m_headers));
 }
 
+Reply *Endpoint::put(const QByteArray &payload)
+{
+    return adoptReply(m_session->put(m_baseUri, payload, m_headers));
+}
+
+Reply *Endpoint::deleteResource()
+{
+    return adoptReply(m_session->deleteResource(m_baseUri, m_headers));
+}
+
 void Endpoint::callback(const int statusCode, const QByteArray &data, const QMap<int, bool> &codes, const QJSValueList &arguments)
 {
     if (!m_callback.isCallable())
         return;
 
     ResponseStatus *status = new ResponseStatus(statusCode, data, codes);
-    qmlEngine(parent())->setObjectOwnership(status, QQmlEngine::JavaScriptOwnership);
+    m_qmlEngine->setObjectOwnership(status, QQmlEngine::JavaScriptOwnership);
     QJSValueList argumentsCopy(arguments);
-    argumentsCopy.insert(0, qjsEngine(parent())->toScriptValue(status));
+    argumentsCopy.insert(0, m_jsEngine->toScriptValue(status));
     m_callback.call(argumentsCopy);
 }
 
