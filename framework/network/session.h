@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QUrl>
+#include <QMap>
 
 class QNetworkAccessManager;
 class Reply;
@@ -14,8 +15,11 @@ class Session : public QObject
 public:
     Session(const QUrl &server, QNetworkAccessManager *network, QObject *parent);
 
-    Reply *get(const QUrl &uri);
-    Reply *post(const QUrl &uri, const QByteArray &payload);
+    Reply *get(const QUrl &uri, const QMap<QByteArray, QByteArray> &headers);
+    Reply *post(const QUrl &uri, const QByteArray &payload, const QMap<QByteArray, QByteArray> &headers);
+
+signals:
+    void networkError(const QString &errorText);
 
 private:
     QUrl completeUri(const QUrl &uri) const;

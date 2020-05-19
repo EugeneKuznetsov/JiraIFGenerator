@@ -3,11 +3,11 @@
 #include <QVariant>
 #include "responsestatus.h"
 
-ResponseStatus::ResponseStatus(const qint32 statusCode, const QByteArray &data, const StatusMap &statuses)
+ResponseStatus::ResponseStatus(const qint32 statusCode, const QByteArray &data, const QMap<int, bool> &statuses)
     : QObject(nullptr)
     , m_statusCode(statusCode)
 {
-    StatusMap::const_iterator status = statuses.constFind(statusCode);
+    QMap<int, bool>::const_iterator status = statuses.constFind(statusCode);
     m_success = (statuses.constEnd() == status) ? false : status.value();
 
     // parse only known errors

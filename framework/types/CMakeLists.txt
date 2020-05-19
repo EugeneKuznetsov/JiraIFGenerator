@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 set(target framework_types)
 
-set(headers responsestatus.h definitions.h)
+set(headers responsestatus.h)
 set(sources responsestatus.cpp)
 
 add_library(${target} OBJECT ${headers} ${sources})

@@ -11,7 +11,7 @@ void SessionTestCase::testGetOffline()
     QNetworkAccessManager network;
     Session session(QUrl("http://a.b.c.d.x.y.z:8080"), &network, nullptr);
 
-    Reply *reply = session.get(QUrl(""));
+    Reply *reply = session.get(QUrl(""), {});
 
     QVERIFY(reply != nullptr);
     QSignalSpy errorSpy(reply, &Reply::networkError);
@@ -37,7 +37,7 @@ void SessionTestCase::testGetOnline()
     QNetworkAccessManager network;
     Session session(QUrl("http://localhost:8080"), &network, nullptr);
 
-    Reply *reply = session.get(QUrl(""));
+    Reply *reply = session.get(QUrl(""), {});
 
     QVERIFY(reply != nullptr);
     QSignalSpy readySpy(reply, &Reply::ready);
@@ -51,7 +51,7 @@ void SessionTestCase::testPostOffline()
     QNetworkAccessManager network;
     Session session(QUrl("http://a.b.c.d.x.y.z:8080"), &network, nullptr);
 
-    Reply *reply = session.post(QUrl(""), "");
+    Reply *reply = session.post(QUrl(""), "", {});
 
     QVERIFY(reply != nullptr);
     QSignalSpy errorSpy(reply, &Reply::networkError);
@@ -77,7 +77,7 @@ void SessionTestCase::testPostOnline()
     QNetworkAccessManager network;
     Session session(QUrl("http://localhost:8080"), &network, nullptr);
 
-    Reply *reply = session.post(QUrl(""), "");
+    Reply *reply = session.post(QUrl(""), "", {});
 
     QVERIFY(reply != nullptr);
     QSignalSpy readySpy(reply, &Reply::ready);

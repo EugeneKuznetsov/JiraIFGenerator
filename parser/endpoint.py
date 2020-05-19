@@ -2,8 +2,6 @@ import re
 from common.errors import UnsupportedParameterTypeException, UnsupportedParameterStyleException
 import json
 
-
-
 class Endpoint:
     header_filename = ''
     source_filename = ''
@@ -25,10 +23,11 @@ class Endpoint:
 
     def __parse_header(self):
         header = self.__generate_disclaimer()
-        header += '#pragma once\n\n#include "endpoint.h"\n\nnamespace GeneratedEndpoints {\n\n'
+        header += '#pragma once\n\n#include "endpoint.h"\n\n'
+        header += 'class Session;\n\n'
         header += 'class {} : public Endpoint\n'.format(self.class_name)
         header += '{\n    Q_OBJECT\n\nprotected:\n    ' + self.class_name
-        header += '(const QJSValue &callback);\n\npublic slots:\n'
+        header += '(const QJSValue &callback, Session *session);\n\npublic slots:\n'
         slots = []
         slot_buddies = []
         for method in self.__methods:
@@ -39,7 +38,7 @@ class Endpoint:
         header += '\n'.join(slots)
         header += '\n\nprotected:\n'
         header += '\n'.join(slot_buddies)
-        header += '\n};\n\n}\n'
+        header += '\n};\n'
         self.header_content = header
 
     def __parse_header_method(self, method: dict) -> tuple:
@@ -70,9 +69,10 @@ class Endpoint:
 
     def __parse_source(self):
         source = self.__generate_disclaimer()
-        source += '#include <QUrlQuery>\n#include "network/reply.h"\n#include "{}"\n\n'.format(self.header_filename)
-        source += 'GeneratedEndpoints::{}::{}(const QJSValue &callback)\n'.format(self.class_name, self.class_name)
-        source += '    : Endpoint(callback)\n{\n}\n\n'
+        source += '#include "session.h"\n#include "reply.h"\n'
+        source += '#include "{}"\n\n'.format(self.header_filename)
+        source += '{}::{}(const QJSValue &callback, Session *session)\n'.format(self.class_name, self.class_name)
+        source += '    : Endpoint(callback, session)\n{\n}\n\n'
         slots = []
         slot_buddies = []
         for method in self.__methods:
@@ -93,7 +93,7 @@ class Endpoint:
         return slot, [request, success, error]
 
     def __parse_source_slot(self, method: dict) -> str:
-        slot = 'void GeneratedEndpoints::{}::{}('.format(self.class_name, self.__cleanup_method_name(method['id']))
+        slot = 'void {}::{}('.format(self.class_name, self.__cleanup_method_name(method['id']))
         parameters = []
         if method.get('parameters'):
             base_uri = method['path']
@@ -133,32 +133,35 @@ class Endpoint:
 
     def __parse_source_slot_impl_parameters(self, method: dict) -> str:
         impl = ''
-        if method.get('request') and method['request'].get('parameters'):
+        if method.get('request'):
             query_parameters = []
             header_parameters = []
             remove_empty = []
-            for parameter in method['request']['parameters']:
-                if parameter['style'] == 'query':
-                    argument = parameter['name']
-                    if parameter['type'] != 'string':
-                        argument = 'QVariant({}).toString()'.format(argument)
-                    query_parameters.append('{' + '"{}", {}'.format(parameter['name'], argument) + '}')
-                    if parameter['type'] == 'string':
-                        remove_empty.append('    if ({}.isEmpty())\n        query.removeQueryItem({});\n'
-                                            .format(parameter['name'], parameter['name']))
-                elif parameter['style'] == 'header':
-                    converted_parameter = self.__cleanup_parameter_name(parameter['name'])
-                    if parameter['type'] != 'string':
-                        converted_parameter = 'QVariant({}).toString()'.format(converted_parameter)
-                    header_parameters.append({parameter['name']: converted_parameter})
-                else:
-                    raise UnsupportedParameterStyleException(parameter['style'])
-            if len(query_parameters):
-                query_parameters = '    QUrlQuery query({\n        ' + ',\n        ' \
-                    .join(query_parameters) + '\n    });\n'
-                impl += query_parameters
-                impl += ''.join(remove_empty)
-                impl += '    setBaseUriQuery(query);\n'
+            if method['request'].get('representation') and method['request']['representation'].get('mediaType'):
+                header_parameters.append({'Content-Type': '"{}"'
+                                         .format(method['request']['representation']['mediaType'])})
+            if method['request'].get('parameters'):
+                for parameter in method['request']['parameters']:
+                    if parameter['style'] == 'query':
+                        argument = parameter['name']
+                        if parameter['type'] != 'string':
+                            argument = 'QVariant({}).toString()'.format(argument)
+                        query_parameters.append('{' + '"{}", {}'.format(parameter['name'], argument) + '}')
+                        if parameter['type'] == 'string':
+                            remove_empty.append('    if ({}.isEmpty())\n        query.removeQueryItem({});\n'
+                                                .format(parameter['name'], parameter['name']))
+                    elif parameter['style'] == 'header':
+                        converted_parameter = self.__cleanup_parameter_name(parameter['name'])
+                        converted_parameter = 'QVariant({}).toByteArray()'.format(converted_parameter)
+                        header_parameters.append({parameter['name']: converted_parameter})
+                    else:
+                        raise UnsupportedParameterStyleException(parameter['style'])
+                if len(query_parameters):
+                    query_parameters = '    QUrlQuery query({\n        ' + ',\n        ' \
+                        .join(query_parameters) + '\n    });\n'
+                    impl += query_parameters
+                    impl += ''.join(remove_empty)
+                    impl += '    setBaseUriQuery(query);\n'
             if len(header_parameters):
                 for header in header_parameters:
                     for header_key, header_value in header.items():
@@ -172,7 +175,7 @@ class Endpoint:
         impl = '    connect({}, &Reply::ready, [this](const int statusCode, const QByteArray &data)'\
             .format(pre_request_method_name) + ' {\n'
         status_map = []
-        impl += '        const StatusMap codes = {\n'
+        impl += '        const QMap<int, bool> codes = {\n'
         if method.get('responses'):
             for response in method['responses']:
                 status = response['status']
@@ -196,7 +199,7 @@ class Endpoint:
         http_method = method['name']
         method_name = self.__cleanup_method_name(method['id'])
         method_name = method_name[0].capitalize() + method_name[1:]
-        request = 'Reply *GeneratedEndpoints::{}::on{}Request(/* {} */)\n'\
+        request = 'Reply *{}::on{}Request(/* {} */)\n'\
             .format(self.class_name, method_name, http_method)
         request += '{\n'
         if http_method == 'POST' or http_method == 'PUT':
@@ -211,7 +214,7 @@ class Endpoint:
     def __parse_source_method_success(self, method: dict) -> str:
         method_name = self.__cleanup_method_name(method['id'])
         method_name = method_name[0].capitalize() + method_name[1:]
-        impl = 'QJSValueList GeneratedEndpoints::{}::on{}Success(const QByteArray &data)\n'\
+        impl = 'QJSValueList {}::on{}Success(const QByteArray &data)\n'\
             .format(self.class_name, method_name)
         impl += '{\n'
         impl += '    return {};'
@@ -221,7 +224,7 @@ class Endpoint:
     def __parse_source_method_error(self, method: dict) -> str:
         method_name = self.__cleanup_method_name(method['id'])
         method_name = method_name[0].capitalize() + method_name[1:]
-        impl = 'QJSValueList GeneratedEndpoints::{}::on{}Error(const QByteArray &data)\n' \
+        impl = 'QJSValueList {}::on{}Error(const QByteArray &data)\n' \
             .format(self.class_name, method_name)
         impl += '{\n'
         impl += '    return {};'

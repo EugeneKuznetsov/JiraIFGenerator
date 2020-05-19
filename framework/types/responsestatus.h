@@ -1,9 +1,7 @@
 #pragma once
 
 #include <QObject>
-#include <QStringList>
 #include <QMap>
-#include "definitions.h"
 
 class ResponseStatus : public QObject
 {
@@ -14,7 +12,7 @@ class ResponseStatus : public QObject
     Q_PROPERTY(QStringList errors READ getErrors CONSTANT)
 
 public:
-    ResponseStatus(const int statusCode, const QByteArray &data, const StatusMap &statuses);
+    ResponseStatus(const int statusCode, const QByteArray &data, const QMap<int, bool> &statuses);
 
     bool getSuccess() const;
     int getStatusCode() const;
