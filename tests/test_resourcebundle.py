@@ -5,7 +5,7 @@ from parser.resourcebundle import Bundle
 
 
 class ResourceBundleTestCase(TestCase):
-    resources = ResourceParser('./jira-rest-plugin_8.8.1.wadl').get_resources()
+    resources = ResourceParser('../wadl/jira-rest-plugin_8.8.1.wadl').get_resources()
     packed_resources = Bundle().pack(resources)
 
     def test_packed_resources(self):
