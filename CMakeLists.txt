@@ -18,3 +18,5 @@ function(generate_endpoints wadl_file output_dir)
         message(FATAL_ERROR "JiraIFGenerator failure")
     endif()
 endfunction()
+
+add_subdirectory(framework)
