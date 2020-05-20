@@ -19,8 +19,8 @@ class Endpoint:
     def __init__(self, name: str, methods: list, version: dict, framework_path: str, output_dir: str):
         self.__generator_version = version
         self.__methods = methods
-        self.__framework_path = framework_path
-        self.__output_dir = output_dir
+        self.__framework_path = framework_path.replace('\\', '/')
+        self.__output_dir = output_dir.replace('\\', '/')
         name = self.__cleanup_file_name(name)
         self.header_filename = name + 'endpointproxy.h'
         self.source_filename = name + 'endpointproxy.cpp'

@@ -3,9 +3,9 @@ from os import getcwd
 from argparse import ArgumentParser
 from pathlib import Path
 from common.errors import GeneratorException
-from parser.jirawadl import ResourceParser
-from parser.resourcebundle import Bundle
-from parser.endpoint import Endpoint
+from models.jirawadl import ResourceParser
+from models.resourcebundle import Bundle
+from models.endpoint import Endpoint
 
 
 class EndpointGenerator:
