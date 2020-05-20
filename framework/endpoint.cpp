@@ -60,6 +60,11 @@ void Endpoint::callback(const int statusCode, const QByteArray &data, const QMap
     m_callback.call(argumentsCopy);
 }
 
+QQmlEngine *Endpoint::getQmlEngine()
+{
+    return m_qmlEngine;
+}
+
 const QJSValue &Endpoint::getCallback() const
 {
     return m_callback;
