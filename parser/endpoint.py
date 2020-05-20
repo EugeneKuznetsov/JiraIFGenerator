@@ -93,7 +93,7 @@ class Endpoint:
 
     def __parse_source(self):
         source = self.__generate_disclaimer()
-        source += '#include "session.h"\n#include "reply.h"\n'
+        source += '#include <QUrlQuery>\n#include "session.h"\n#include "reply.h"\n'
         source += '#include "{}"\n\n'.format(self.header_filename)
         source += '{}::{}(const QJSValue &callback, Session *session, QJSEngine *jsEng, QQmlEngine *qmlEng)\n'\
             .format(self.class_name, self.class_name)
@@ -171,22 +171,22 @@ class Endpoint:
                         argument = parameter['name']
                         if parameter['type'] != 'string':
                             argument = 'QVariant({}).toString()'.format(argument)
-                        query_parameters.append('{' + '"{}", {}'.format(parameter['name'], argument) + '}')
+                            query_parameters.append('{' + '"{}", {}'.format(parameter['name'], argument) + '}')
                         if parameter['type'] == 'string':
-                            remove_empty.append('    if ({}.isEmpty())\n        query.removeQueryItem({});\n'
-                                                .format(parameter['name'], parameter['name']))
+                            remove_empty.append('    if (!{}.isEmpty())\n        _query_.addQueryItem("{}", {});\n'
+                                                .format(parameter['name'], parameter['name'], parameter['name']))
                     elif parameter['style'] == 'header':
                         converted_parameter = self.__cleanup_parameter_name(parameter['name'])
                         converted_parameter = 'QVariant({}).toByteArray()'.format(converted_parameter)
                         header_parameters.append({parameter['name']: converted_parameter})
                     else:
                         raise UnsupportedParameterStyleException(parameter['style'])
-                if len(query_parameters):
-                    query_parameters = '    QUrlQuery query({\n        ' + ',\n        ' \
+                if len(query_parameters) or len(remove_empty):
+                    query_parameters = '    QUrlQuery _query_({\n        ' + ',\n        '\
                         .join(query_parameters) + '\n    });\n'
                     impl += query_parameters
                     impl += ''.join(remove_empty)
-                    impl += '    setBaseUriQuery(query);\n'
+                    impl += '    setBaseUriQuery(_query_);\n'
             if len(header_parameters):
                 for header in header_parameters:
                     for header_key, header_value in header.items():
@@ -197,13 +197,15 @@ class Endpoint:
         method_name = self.__cleanup_method_name(method['id'])
         method_name = method_name[0].capitalize() + method_name[1:]
         pre_request_method_name = 'on{}Request()'.format(method_name)
-        impl = '    connect({}, &Reply::ready, [this](const int statusCode, const QByteArray &data)'\
+        impl = '    connect({}, &Reply::ready, [this](const int _statusCode_, const QByteArray &_data_)'\
             .format(pre_request_method_name) + ' {\n'
         status_map = []
         impl += '        const QMap<int, bool> codes = {\n'
         if method.get('responses'):
             for response in method['responses']:
                 status = response['status']
+                if status == '':
+                    continue
                 success = 'true' if status.startswith('2') or status.startswith('3') else 'false'
                 status_map.append('{' + status + ', ' + success + '}')
 
@@ -212,11 +214,11 @@ class Endpoint:
             impl += (',\n' + indent).join(status_map)
             impl += '\n'
         impl += '        };\n'
-        impl += '        auto successStatus = codes.find(statusCode);\n'
+        impl += '        auto successStatus = codes.find(_statusCode_);\n'
         impl += '        if (successStatus != codes.cend() && successStatus.value())\n'
-        impl += '            callback(statusCode, data, codes, on{}Success(data));\n'.format(method_name)
+        impl += '            callback(_statusCode_, _data_, codes, on{}Success(_data_));\n'.format(method_name)
         impl += '        else\n'
-        impl += '            callback(statusCode, data, codes, on{}Error(data));\n'.format(method_name)
+        impl += '            callback(_statusCode_, _data_, codes, on{}Error(_data_));\n'.format(method_name)
         impl += '    });'
         return impl
 
@@ -289,7 +291,7 @@ class Endpoint:
         elif parameter_type == 'boolean':
             return 'const bool '
         elif parameter_type == 'long':
-            return 'const long '
+            return 'const long long '
         elif parameter_type == 'int':
             return 'const int '
         else:

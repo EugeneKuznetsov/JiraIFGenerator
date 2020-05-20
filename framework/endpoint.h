@@ -25,6 +25,8 @@ protected:
 
     void callback(const int statusCode, const QByteArray &data, const QMap<int, bool> &codes, const QJSValueList &arguments);
 
+    QQmlEngine *getQmlEngine();
+
     template <typename T>
     QJSValue jsArg(const T &value) {
         return m_jsEngine->toScriptValue(value);
@@ -48,4 +50,3 @@ private:
     QJSEngine                    *m_jsEngine;
     QQmlEngine                   *m_qmlEngine;
 };
-
