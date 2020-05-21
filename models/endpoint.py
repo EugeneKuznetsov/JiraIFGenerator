@@ -19,17 +19,35 @@ class Endpoint:
     def __init__(self, name: str, methods: list, version: dict, framework_path: str, output_dir: str):
         self.__generator_version = version
         self.__methods = methods
-        self.__framework_path = framework_path
-        self.__output_dir = output_dir
+        self.__framework_path = framework_path.replace('\\', '/')
+        self.__output_dir = output_dir.replace('\\', '/')
         name = self.__cleanup_file_name(name)
         self.header_filename = name + 'endpointproxy.h'
         self.source_filename = name + 'endpointproxy.cpp'
         self.cmake_filename = name + 'endpointproxy.cmake'
         self.cmake_var = 'generated_' + name + 'endpointproxy'
         self.class_name = self.__cleanup_class_name(name) + 'EndpointProxy'
+        self.__make_unique_methods()
         self.__parse_header()
         self.__parse_source()
         self.__generate_cmake()
+
+    def __make_unique_methods(self):
+        duplicates = {}
+        for i, method in enumerate(self.__methods):
+            if duplicates.get(method['id']) is None:
+                duplicates[method['id']] = [i]
+            else:
+                duplicates[method['id']].append(i)
+        for duplicate_method, indices in duplicates.items():
+            if len(indices) > 1:
+                for i in indices:
+                    param_num = 0
+                    if self.__methods[i].get('parameters'):
+                        param_num += len(self.__methods[i]['parameters'])
+                    if self.__methods[i].get('request') and self.__methods[i]['request'].get('parameters'):
+                        param_num += len(self.__methods[i]['request']['parameters'])
+                    self.__methods[i]['id'] = '{}_{}P'.format(self.__methods[i]['id'], param_num)
 
     def __generate_cmake(self):
         cmake = self.__generate_cmake_disclaimer()
@@ -232,9 +250,9 @@ class Endpoint:
         if http_method == 'POST' or http_method == 'PUT':
             request += '    return nullptr;\n'
         elif http_method == 'GET':
-            request += '    return get();\n'
+            request += '    return http_get();\n'
         elif http_method == 'DELETE':
-            request += '    return deleteResource();\n'
+            request += '    return http_delete();\n'
         request += '}'
         return request
 

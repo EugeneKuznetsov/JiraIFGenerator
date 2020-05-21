@@ -28,22 +28,22 @@ void Endpoint::setBaseUriQuery(const QUrlQuery &query)
     m_baseUri.setQuery(query);
 }
 
-Reply *Endpoint::post(const QByteArray &payload)
+Reply *Endpoint::http_post(const QByteArray &payload)
 {
     return adoptReply(m_session->post(m_baseUri, payload, m_headers));
 }
 
-Reply *Endpoint::get()
+Reply *Endpoint::http_get()
 {
     return adoptReply(m_session->get(m_baseUri, m_headers));
 }
 
-Reply *Endpoint::put(const QByteArray &payload)
+Reply *Endpoint::http_put(const QByteArray &payload)
 {
     return adoptReply(m_session->put(m_baseUri, payload, m_headers));
 }
 
-Reply *Endpoint::deleteResource()
+Reply *Endpoint::http_delete()
 {
     return adoptReply(m_session->deleteResource(m_baseUri, m_headers));
 }
