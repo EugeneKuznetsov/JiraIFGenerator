@@ -16,12 +16,12 @@ class Endpoint:
     __framework_path = ''
     __output_dir = ''
 
-    def __init__(self, name: str, methods: list, version: dict, framework_path: str, output_dir: str):
+    def __init__(self, name: str, methods: list, version: dict, framework_path: str, output_dir: str, class_prefix: str):
         self.__generator_version = version
         self.__methods = methods
         self.__framework_path = framework_path.replace('\\', '/')
         self.__output_dir = output_dir.replace('\\', '/')
-        name = self.__cleanup_file_name(name)
+        name = self.__cleanup_file_name(class_prefix + name)
         self.header_filename = name + 'endpointproxy.h'
         self.source_filename = name + 'endpointproxy.cpp'
         self.cmake_filename = name + 'endpointproxy.cmake'
@@ -324,7 +324,8 @@ class Endpoint:
         name = name.capitalize()
         known_words = ['option', 'properties', 'field', 'user', 'picker', 'type', 'link', 'role',
                        'validator', 'mission', 'preference', 'self', 'category', 'validate', 'index',
-                       'level', 'info', 'avatar', 'security', 'scheme']
+                       'level', 'info', 'avatar', 'security', 'scheme', 'backlog', 'epic', 'board',
+                       'sprint', 'issue']
         for word in known_words:
             name = name.replace(word, word.capitalize())
         return name

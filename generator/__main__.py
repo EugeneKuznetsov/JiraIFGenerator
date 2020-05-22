@@ -26,13 +26,13 @@ class EndpointGenerator:
             cmake_file.write(endpoint.cmake_content)
 
 
-def main(wadl_file: str, output_dir: str):
+def main(wadl_file: str, output_dir: str, class_prefix: str):
     validate_args(wadl_file, output_dir)
     resources = ResourceParser(wadl_file).get_resources()
     endpoints = Bundle().pack(resources)
     framework_path = getcwd() + '/framework'
     for name, methods in endpoints.items():
-        endpoint = Endpoint(name, methods, {'major': 0, 'minor': 3}, framework_path, output_dir)
+        endpoint = Endpoint(name, methods, {'major': 0, 'minor': 3}, framework_path, output_dir, class_prefix)
         EndpointGenerator(endpoint, output_dir).generate()
 
 
@@ -50,9 +50,10 @@ if __name__ == '__main__':
                             usage='%(prog)s input output')
     parser.add_argument('input', help='Absolute path to Jira REST API WADL document')
     parser.add_argument('output', help='Output directory for generated interfaces of endpoints')
+    parser.add_argument('--prefix', help='Prefix for EndpointProxy classes', dest='prefix', default='')
     args = parser.parse_args()
     try:
-        main(args.input, args.output)
+        main(args.input, args.output, args.prefix)
     except GeneratorException as error:
         log.error('{}'.format(error))
         exit(error.code())
