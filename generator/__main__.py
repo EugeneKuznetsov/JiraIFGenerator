@@ -32,7 +32,7 @@ def main(wadl_file: str, output_dir: str, class_prefix: str):
     endpoints = Bundle().pack(resources)
     framework_path = getcwd() + '/framework'
     for name, methods in endpoints.items():
-        endpoint = Endpoint(name, methods, {'major': 0, 'minor': 4}, framework_path, output_dir, class_prefix)
+        endpoint = Endpoint(name, methods, {'major': 0, 'minor': 5}, framework_path, output_dir, class_prefix)
         EndpointGenerator(endpoint, output_dir).generate()
 
 

@@ -1,10 +1,13 @@
 #pragma once
 
 #include <QObject>
+#include <QNetworkRequest>
+#include <QSslConfiguration>
 #include <QUrl>
 #include <QMap>
 
 class QNetworkAccessManager;
+class QNetworkRequest;
 class Reply;
 
 class Session : public QObject
@@ -25,10 +28,15 @@ public:
 signals:
     void networkError(const QString &errorText);
 
+public slots:
+    void setupCaCertificateFile(const QString &certificateFile);
+
 private:
     QUrl completeUri(const QUrl &uri) const;
+    QNetworkRequest createRequest(const QUrl &uri, const QMap<QByteArray, QByteArray> &headers) const;
 
 private:
     QNetworkAccessManager *m_network;
     QUrl                  m_server;
+    QSslConfiguration     m_sslConfiguration;
 };
