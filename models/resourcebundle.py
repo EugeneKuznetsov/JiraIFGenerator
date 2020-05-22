@@ -4,7 +4,7 @@ class Bundle:
 
     def __init__(self, base_path: str = '/rest/', common_paths=None):
         if common_paths is None:
-            common_paths = ['api/2/', 'auth/1/']
+            common_paths = ['api/2/', 'auth/1/', 'agile/1.0/']
         self.__common_paths = common_paths
         self.__base_path = base_path
 
