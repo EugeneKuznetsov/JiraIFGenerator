@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns2:application xmlns:ns2="http://wadl.dev.java.net/2009/02">
+ <ns2:doc title="Jira Agile 7.3.0 Unofficial" xml:lang="en"/>
+ <ns2:resources base="http://example.com:8080/jira/rest/">
+  <ns2:resource path="agile/1.0/backlog">
+   <ns2:method id="moveIssuesToBacklog" name="POST">
+    <ns2:response status="204"/>
+    <ns2:response status="400"/>
+    <ns2:response status="401"/>
+    <ns2:response status="403"/>
+    <ns2:response status="404"/>
+   </ns2:method>
+  </ns2:resource>
+  <ns2:resource path="agile/1.0/board">
+   <ns2:method id="getAllBoards" name="GET">
+    <ns2:request>
+     <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     <ns2:param name="type" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     <ns2:param name="name" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     <ns2:param name="projectKeyOrId" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    </ns2:request>
+    <ns2:response status="200"/>
+    <ns2:response status="400"/>
+    <ns2:response status="401"/>
+    <ns2:response status="403"/>
+   </ns2:method>
+   <ns2:method id="createBoard" name="POST">
+    <ns2:request>
+     <ns2:representation mediaType="application/json"/>
+    </ns2:request>
+    <ns2:response status="200"/>
+    <ns2:response status="400"/>
+    <ns2:response status="401"/>
+    <ns2:response status="403"/>
+   </ns2:method>
+   <ns2:resource path="/{boardId}">
+    <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getBoard" name="GET">
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="deleteBoard" name="DELETE">
+     <ns2:response status="204"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+   <ns2:resource path="/{boardId}/backlog">
+    <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getIssuesForBacklog" name="GET">
+     <ns2:request>
+      <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="jql" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="validateQuery" style="query" type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+   <ns2:resource path="/{boardId}/configuration">
+    <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getConfiguration" name="GET">
+     <ns2:response status="200"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+   <ns2:resource path="/{boardId}/issue">
+    <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getIssuesForBoard" name="GET">
+     <ns2:request>
+      <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="jql" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="validateQuery" style="query" type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+  </ns2:resource>
+  <ns2:resource path="agile/1.0/board/{boardId}/epic">
+   <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+   <ns2:method id="getEpics" name="GET">
+    <ns2:request>
+     <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     <ns2:param name="done" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    </ns2:request>
+    <ns2:response status="200"/>
+    <ns2:response status="400"/>
+    <ns2:response status="401"/>
+    <ns2:response status="403"/>
+    <ns2:response status="404"/>
+   </ns2:method>
+   <ns2:resource path="/{epicId}/issue">
+    <ns2:param name="epicId" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getIssuesForEpic" name="GET">
+     <ns2:request>
+      <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="jql" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="validateQuery" style="query" type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+   <ns2:resource path="/none/issue">
+    <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getIssuesWithoutEpic" name="GET">
+     <ns2:request>
+      <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="jql" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="validateQuery" style="query" type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+  </ns2:resource>
+  <ns2:resource path="agile/1.0/board/{boardId}/project">
+   <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+   <ns2:method id="getProjects" name="GET">
+    <ns2:request>
+     <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    </ns2:request>
+    <ns2:response status="200"/>
+    <ns2:response status="400"/>
+    <ns2:response status="401"/>
+    <ns2:response status="403"/>
+    <ns2:response status="404"/>
+   </ns2:method>
+  </ns2:resource>
+  <ns2:resource path="agile/1.0/board/{boardId}/properties">
+   <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+   <ns2:method id="getPropertiesKeys" name="GET">
+    <ns2:response status="200"/>
+    <ns2:response status="400"/>
+    <ns2:response status="401"/>
+    <ns2:response status="404"/>
+   </ns2:method>
+   <ns2:resource path="/{propertyKey}">
+    <ns2:param name="propertyKey" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="deleteProperty" name="DELETE">
+     <ns2:request>
+      <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="jql" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="validateQuery" style="query" type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="204"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="setProperty" name="PUT">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="201"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="getProperty" name="GET">
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+  </ns2:resource>
+  <ns2:resource path="agile/1.0/board/{boardId}/sprint">
+   <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+   <ns2:method id="getAllSprints" name="GET">
+    <ns2:request>
+     <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     <ns2:param name="state" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    </ns2:request>
+    <ns2:response status="200"/>
+    <ns2:response status="400"/>
+    <ns2:response status="401"/>
+    <ns2:response status="403"/>
+    <ns2:response status="404"/>
+   </ns2:method>
+   <ns2:resource path="/{sprintId}/issue">
+    <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:param name="sprintId" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getIssuesForSprint" name="GET">
+     <ns2:request>
+      <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="jql" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="validateQuery" style="query" type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+  </ns2:resource>
+  <ns2:resource path="agile/1.0/board/{boardId}/version">
+   <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+   <ns2:method id="getAllVersions" name="GET">
+    <ns2:request>
+     <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     <ns2:param name="released" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    </ns2:request>
+    <ns2:response status="200"/>
+    <ns2:response status="400"/>
+    <ns2:response status="401"/>
+    <ns2:response status="403"/>
+    <ns2:response status="404"/>
+   </ns2:method>
+  </ns2:resource>
+  <ns2:resource path="agile/1.0/epic">
+   <ns2:resource path="/{epicIdOrKey}">
+    <ns2:param name="epicIdOrKey" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getEpic" name="GET">
+     <ns2:response status="200"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="partiallyUpdateEpic" name="POST">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+   <ns2:resource path="/{epicIdOrKey}/issue">
+    <ns2:param name="epicIdOrKey" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getIssuesForEpic" name="GET">
+     <ns2:request>
+      <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="jql" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="validateQuery" style="query" type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="moveIssuesToEpic" name="POST">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+   <ns2:resource path="/{epicIdOrKey}/rank">
+    <ns2:param name="epicIdOrKey" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="rankEpics" name="PUT">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+     </ns2:request>
+     <ns2:response status="204"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+   <ns2:resource path="/none/issue">
+    <ns2:method id="getIssuesWithoutEpic" name="GET">
+     <ns2:request>
+      <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="jql" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="validateQuery" style="query" type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="removeIssuesFromEpic" name="POST">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+     </ns2:request>
+     <ns2:response status="204"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+  </ns2:resource>
+  <ns2:resource path="agile/1.0/issue">
+   <ns2:resource path="/{issueIdOrKey}">
+    <ns2:param name="issueIdOrKey" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getIssue" name="GET">
+     <ns2:request>
+      <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+   <ns2:resource path="/{issueIdOrKey}/estimation">
+    <ns2:param name="issueIdOrKey" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getIssueEstimationForBoard" name="GET">
+     <ns2:request>
+      <ns2:param name="boardId" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="estimateIssueForBoard" name="PUT">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+      <ns2:param name="boardId" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="204"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+   <ns2:resource path="/rank">
+    <ns2:method id="rankIssues" name="PUT">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+     </ns2:request>
+     <ns2:response status="204"/>
+     <ns2:response status="207"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+  </ns2:resource>
+  <ns2:resource path="agile/1.0/sprint">
+   <ns2:method id="createSprint" name="POST">
+    <ns2:request>
+     <ns2:representation mediaType="application/json"/>
+    </ns2:request>
+    <ns2:response status="201"/>
+    <ns2:response status="400"/>
+    <ns2:response status="401"/>
+    <ns2:response status="403"/>
+    <ns2:response status="404"/>
+   </ns2:method>
+   <ns2:resource path="/{sprintId}">
+    <ns2:param name="sprintId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="getSprint" name="GET">
+     <ns2:response status="200"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="updateSprint" name="PUT">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="partiallyUpdateSprint" name="POST">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="deleteSprint" name="DELETE">
+     <ns2:response status="204"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+   <ns2:resource path="/{sprintId}/issue">
+    <ns2:param name="sprintId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="moveIssuesToSprint" name="POST">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+     </ns2:request>
+     <ns2:response status="204"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="getIssuesForSprint" name="GET">
+     <ns2:request>
+      <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="jql" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="validateQuery" style="query" type="xs:boolean" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+      <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+    </ns2:method>
+   </ns2:resource>
+   <ns2:resource path="/{sprintId}/swap">
+    <ns2:param name="sprintId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="swapSprint" name="POST">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+     </ns2:request>
+     <ns2:response status="204"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+  </ns2:resource>
+  <ns2:resource path="agile/1.0/sprint/{sprintId}/properties">
+   <ns2:param name="sprintId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+   <ns2:method id="getPropertiesKeys" name="GET">
+    <ns2:response status="200"/>
+    <ns2:response status="400"/>
+    <ns2:response status="401"/>
+    <ns2:response status="403"/>
+    <ns2:response status="404"/>
+   </ns2:method>
+   <ns2:resource path="/{propertyKey}">
+    <ns2:param name="sprintId" style="template" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:param name="propertyKey" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
+    <ns2:method id="deleteProperty" name="DELETE">
+     <ns2:response status="204"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="setProperty" name="PUT">
+     <ns2:request>
+      <ns2:representation mediaType="application/json"/>
+     </ns2:request>
+     <ns2:response status="200"/>
+     <ns2:response status="201"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+    <ns2:method id="getProperty" name="GET">
+     <ns2:response status="204"/>
+     <ns2:response status="400"/>
+     <ns2:response status="401"/>
+     <ns2:response status="403"/>
+     <ns2:response status="404"/>
+    </ns2:method>
+   </ns2:resource>
+  </ns2:resource>
+ </ns2:resources>
+</ns2:application>
