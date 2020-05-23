@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(ifgenerator VERSION 0.5)
+project(ifgenerator VERSION 0.6)
 
 set(generator_work_dir ${CMAKE_CURRENT_LIST_DIR}
     CACHE INTERNAL "Working directory for JiraIFGenerator")
