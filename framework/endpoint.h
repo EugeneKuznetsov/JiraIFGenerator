@@ -18,10 +18,10 @@ protected:
     void setBaseUri(const QUrl &uri);
     void setBaseUriQuery(const QUrlQuery &query);
 
-    Reply *http_post(const QByteArray &payload);
-    Reply *http_get();
-    Reply *http_put(const QByteArray &payload);
-    Reply *http_delete();
+    Reply *httpPost(const QByteArray &payload);
+    Reply *httpGet();
+    Reply *httpPut(const QByteArray &payload);
+    Reply *httpDelete();
 
     void callback(const int statusCode, const QByteArray &data, const QMap<int, bool> &codes, const QJSValueList &arguments);
 
