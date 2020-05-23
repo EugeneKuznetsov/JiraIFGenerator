@@ -111,7 +111,8 @@ class Endpoint:
 
     def __parse_source(self):
         source = self.__generate_disclaimer()
-        source += '#include <QUrlQuery>\n#include "session.h"\n#include "reply.h"\n'
+        source += '#include <QUrlQuery>\n#include <QJsonDocument>\n#include <QJsonObject>\n#include <QJsonArray>\n'
+        source += '#include "session.h"\n#include "reply.h"\n'
         source += '#include "{}"\n\n'.format(self.header_filename)
         source += '{}::{}(const QJSValue &callback, Session *session, QJSEngine *jsEng, QQmlEngine *qmlEng)\n'\
             .format(self.class_name, self.class_name)
@@ -226,7 +227,6 @@ class Endpoint:
                     continue
                 success = 'true' if status.startswith('2') or status.startswith('3') else 'false'
                 status_map.append('{' + status + ', ' + success + '}')
-
             indent = '            '
             impl += indent
             impl += (',\n' + indent).join(status_map)
@@ -262,7 +262,21 @@ class Endpoint:
         impl = 'QJSValueList {}::on{}Success(const QByteArray &data)\n'\
             .format(self.class_name, method_name)
         impl += '{\n'
-        impl += '    return {};'
+        data = None
+        if method.get('responses'):
+            for response in method['responses']:
+                if response.get('representations'):
+                    for representation in response['representations']:
+                        if representation.get('mediaType') and representation['mediaType'] == 'application/json':
+                            data = '    QJsonDocument json = QJsonDocument::fromJson(data);\n'
+                            data += '    if (json.isNull())\n'
+                            data += '        return {};\n'
+                            data += '    else\n'
+                            data += '        return {json.isObject() ? jsArg(json.object()) : jsArg(json.array())};'
+                            break
+                    if data is not None:
+                        break
+        impl += '    return {};' if data is None else data
         impl += '\n}'
         return impl
 
