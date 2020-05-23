@@ -250,9 +250,9 @@ class Endpoint:
         if http_method == 'POST' or http_method == 'PUT':
             request += '    return nullptr;\n'
         elif http_method == 'GET':
-            request += '    return http_get();\n'
+            request += '    return httpGet();\n'
         elif http_method == 'DELETE':
-            request += '    return http_delete();\n'
+            request += '    return httpDelete();\n'
         request += '}'
         return request
 
