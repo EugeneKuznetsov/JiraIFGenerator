@@ -270,7 +270,7 @@ class Endpoint:
                         if representation.get('mediaType') and representation['mediaType'] == 'application/json':
                             data = '    QJsonDocument json = QJsonDocument::fromJson(data);\n'
                             data += '    if (json.isNull())\n'
-                            data += '        return {};\n'
+                            data += '        return {jsArg(nullptr)};\n'
                             data += '    else\n'
                             data += '        return {json.isObject() ? jsArg(json.object()) : jsArg(json.array())};'
                             break
@@ -286,7 +286,17 @@ class Endpoint:
         impl = 'QJSValueList {}::on{}Error(const QByteArray &data)\n' \
             .format(self.class_name, method_name)
         impl += '{\n'
-        impl += '    return {};'
+        data = None
+        if method.get('responses'):
+            for response in method['responses']:
+                if response.get('representations'):
+                    for representation in response['representations']:
+                        if representation.get('mediaType') and representation['mediaType'] == 'application/json':
+                            data = '    return {jsArg(nullptr)};'
+                            break
+                    if data is not None:
+                        break
+        impl += '    return {};' if data is None else data
         impl += '\n}'
         return impl
 
