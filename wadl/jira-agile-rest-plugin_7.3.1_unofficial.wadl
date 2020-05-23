@@ -20,7 +20,9 @@
      <ns2:param name="name" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      <ns2:param name="projectKeyOrId" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
     </ns2:request>
-    <ns2:response status="200"/>
+    <ns2:response status="200">
+     <ns2:representation mediaType="application/json"/>
+    </ns2:response>
     <ns2:response status="400"/>
     <ns2:response status="401"/>
     <ns2:response status="403"/>
@@ -29,7 +31,9 @@
     <ns2:request>
      <ns2:representation mediaType="application/json"/>
     </ns2:request>
-    <ns2:response status="200"/>
+    <ns2:response status="200">
+     <ns2:representation mediaType="application/json"/>
+    </ns2:response>
     <ns2:response status="400"/>
     <ns2:response status="401"/>
     <ns2:response status="403"/>
@@ -37,7 +41,9 @@
    <ns2:resource path="/{boardId}">
     <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
     <ns2:method id="getBoard" name="GET">
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -60,7 +66,9 @@
       <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
       <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -70,7 +78,9 @@
    <ns2:resource path="/{boardId}/configuration">
     <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
     <ns2:method id="getConfiguration" name="GET">
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
      <ns2:response status="404"/>
@@ -87,7 +97,9 @@
       <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
       <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -103,7 +115,9 @@
      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      <ns2:param name="done" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
     </ns2:request>
-    <ns2:response status="200"/>
+    <ns2:response status="200">
+     <ns2:representation mediaType="application/json"/>
+    </ns2:response>
     <ns2:response status="400"/>
     <ns2:response status="401"/>
     <ns2:response status="403"/>
@@ -121,7 +135,9 @@
       <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
       <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -139,7 +155,9 @@
       <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
       <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -154,7 +172,9 @@
      <ns2:param name="startAt" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
     </ns2:request>
-    <ns2:response status="200"/>
+    <ns2:response status="200">
+     <ns2:representation mediaType="application/json"/>
+    </ns2:response>
     <ns2:response status="400"/>
     <ns2:response status="401"/>
     <ns2:response status="403"/>
@@ -164,7 +184,9 @@
   <ns2:resource path="agile/1.0/board/{boardId}/properties">
    <ns2:param name="boardId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
    <ns2:method id="getPropertiesKeys" name="GET">
-    <ns2:response status="200"/>
+    <ns2:response status="200">
+     <ns2:representation mediaType="application/json"/>
+    </ns2:response>
     <ns2:response status="400"/>
     <ns2:response status="401"/>
     <ns2:response status="404"/>
@@ -197,7 +219,9 @@
      <ns2:response status="404"/>
     </ns2:method>
     <ns2:method id="getProperty" name="GET">
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="404"/>
@@ -212,7 +236,9 @@
      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      <ns2:param name="state" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
     </ns2:request>
-    <ns2:response status="200"/>
+    <ns2:response status="200">
+     <ns2:representation mediaType="application/json"/>
+    </ns2:response>
     <ns2:response status="400"/>
     <ns2:response status="401"/>
     <ns2:response status="403"/>
@@ -230,7 +256,9 @@
       <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
       <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -246,7 +274,9 @@
      <ns2:param name="maxResults" style="query" type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      <ns2:param name="released" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
     </ns2:request>
-    <ns2:response status="200"/>
+    <ns2:response status="200">
+     <ns2:representation mediaType="application/json"/>
+    </ns2:response>
     <ns2:response status="400"/>
     <ns2:response status="401"/>
     <ns2:response status="403"/>
@@ -257,7 +287,9 @@
    <ns2:resource path="/{epicIdOrKey}">
     <ns2:param name="epicIdOrKey" style="template" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
     <ns2:method id="getEpic" name="GET">
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
      <ns2:response status="404"/>
@@ -266,7 +298,9 @@
      <ns2:request>
       <ns2:representation mediaType="application/json"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -284,7 +318,9 @@
       <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
       <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -324,7 +360,9 @@
       <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
       <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -350,7 +388,9 @@
       <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
       <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -363,7 +403,9 @@
      <ns2:request>
       <ns2:param name="boardId" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -374,7 +416,9 @@
       <ns2:representation mediaType="application/json"/>
       <ns2:param name="boardId" style="query" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      </ns2:request>
-     <ns2:response status="204"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -387,7 +431,9 @@
       <ns2:representation mediaType="application/json"/>
      </ns2:request>
      <ns2:response status="204"/>
-     <ns2:response status="207"/>
+     <ns2:response status="207">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -400,7 +446,9 @@
     <ns2:request>
      <ns2:representation mediaType="application/json"/>
     </ns2:request>
-    <ns2:response status="201"/>
+    <ns2:response status="201">
+     <ns2:representation mediaType="application/json"/>
+    </ns2:response>
     <ns2:response status="400"/>
     <ns2:response status="401"/>
     <ns2:response status="403"/>
@@ -409,7 +457,9 @@
    <ns2:resource path="/{sprintId}">
     <ns2:param name="sprintId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
     <ns2:method id="getSprint" name="GET">
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
      <ns2:response status="404"/>
@@ -418,7 +468,9 @@
      <ns2:request>
       <ns2:representation mediaType="application/json"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -428,14 +480,18 @@
      <ns2:request>
       <ns2:representation mediaType="application/json"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
      <ns2:response status="404"/>
     </ns2:method>
     <ns2:method id="deleteSprint" name="DELETE">
-     <ns2:response status="204"/>
+     <ns2:response status="204">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -463,7 +519,9 @@
       <ns2:param name="fields" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
       <ns2:param name="expand" style="query" type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
      </ns2:request>
-     <ns2:response status="200"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
@@ -475,7 +533,9 @@
      <ns2:request>
       <ns2:representation mediaType="application/json"/>
      </ns2:request>
-     <ns2:response status="204"/>
+     <ns2:response status="204">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
      <ns2:response status="404"/>
@@ -485,7 +545,9 @@
   <ns2:resource path="agile/1.0/sprint/{sprintId}/properties">
    <ns2:param name="sprintId" style="template" type="xs:long" xmlns:xs="http://www.w3.org/2001/XMLSchema"/>
    <ns2:method id="getPropertiesKeys" name="GET">
-    <ns2:response status="200"/>
+    <ns2:response status="200">
+     <ns2:representation mediaType="application/json"/>
+    </ns2:response>
     <ns2:response status="400"/>
     <ns2:response status="401"/>
     <ns2:response status="403"/>
@@ -513,7 +575,9 @@
      <ns2:response status="404"/>
     </ns2:method>
     <ns2:method id="getProperty" name="GET">
-     <ns2:response status="204"/>
+     <ns2:response status="200">
+      <ns2:representation mediaType="application/json"/>
+     </ns2:response>
      <ns2:response status="400"/>
      <ns2:response status="401"/>
      <ns2:response status="403"/>
