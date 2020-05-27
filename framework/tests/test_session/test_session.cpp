@@ -22,21 +22,22 @@ void SessionTestCase::testGetOnline_data()
 {
     QTest::addColumn<ushort>("port");
     QTest::addColumn<bool>("secure");
-    QTest::addColumn<QString>("certificate");
+    QTest::addColumn<QUrl>("certificate");
     QTest::addColumn<QUrl>("server");
     QTest::addColumn<QString>("method");
     QTest::addColumn<int>("statusCode");
 
-    QTest::newRow("invalid") << ushort(8080) << false << "" << QUrl("http://localhost:8080") << "POST" << 404;
-    QTest::newRow("valid") << ushort(8080) << false << "" << QUrl("http://localhost:8080") << "GET" << 200;
-    QTest::newRow("valid secure") << ushort(4443) << true << ":/cute/mock/ssl/cert/localhost.crt" << QUrl("https://localhost:4443") << "GET" << 200;
+    QTest::newRow("invalid") << ushort(8080) << false << QUrl("") << QUrl("http://localhost:8080") << "POST" << 404;
+    QTest::newRow("valid") << ushort(8080) << false << QUrl("") << QUrl("http://localhost:8080") << "GET" << 200;
+    QTest::newRow("valid secure") << ushort(4443) << true << QUrl("qrc:/cute/mock/ssl/cert/localhost.crt")
+                                  << QUrl("https://localhost:4443") << "GET" << 200;
 }
 
 void SessionTestCase::testGetOnline()
 {
     QFETCH(ushort, port);
     QFETCH(bool, secure);
-    QFETCH(QString, certificate);
+    QFETCH(QUrl, certificate);
     QFETCH(QUrl, server);
     QFETCH(QString, method);
     QFETCH(int, statusCode);
@@ -72,21 +73,22 @@ void SessionTestCase::testPostOnline_data()
 {
     QTest::addColumn<ushort>("port");
     QTest::addColumn<bool>("secure");
-    QTest::addColumn<QString>("certificate");
+    QTest::addColumn<QUrl>("certificate");
     QTest::addColumn<QUrl>("server");
     QTest::addColumn<QString>("method");
     QTest::addColumn<int>("statusCode");
 
-    QTest::newRow("invalid") << ushort(8080) << false << "" << QUrl("http://localhost:8080") << "GET" << 404;
-    QTest::newRow("valid") << ushort(8080) << false << "" << QUrl("http://localhost:8080") << "POST" << 200;
-    QTest::newRow("valid secure") << ushort(4443) << true << ":/cute/mock/ssl/cert/localhost.crt" << QUrl("https://localhost:4443") << "POST" << 200;
+    QTest::newRow("invalid") << ushort(8080) << false << QUrl("") << QUrl("http://localhost:8080") << "GET" << 404;
+    QTest::newRow("valid") << ushort(8080) << false << QUrl("") << QUrl("http://localhost:8080") << "POST" << 200;
+    QTest::newRow("valid secure") << ushort(4443) << true << QUrl(":/cute/mock/ssl/cert/localhost.crt")
+                                  << QUrl("https://localhost:4443") << "POST" << 200;
 }
 
 void SessionTestCase::testPostOnline()
 {
     QFETCH(ushort, port);
     QFETCH(bool, secure);
-    QFETCH(QString, certificate);
+    QFETCH(QUrl, certificate);
     QFETCH(QUrl, server);
     QFETCH(QString, method);
     QFETCH(int, statusCode);
@@ -122,21 +124,22 @@ void SessionTestCase::testPutOnline_data()
 {
     QTest::addColumn<ushort>("port");
     QTest::addColumn<bool>("secure");
-    QTest::addColumn<QString>("certificate");
+    QTest::addColumn<QUrl>("certificate");
     QTest::addColumn<QUrl>("server");
     QTest::addColumn<QString>("method");
     QTest::addColumn<int>("statusCode");
 
-    QTest::newRow("invalid") << ushort(8080) << false << "" << QUrl("http://localhost:8080") << "GET" << 404;
-    QTest::newRow("valid") << ushort(8080) << false << "" << QUrl("http://localhost:8080") << "PUT" << 200;
-    QTest::newRow("valid secure") << ushort(4443) << true << ":/cute/mock/ssl/cert/localhost.crt" << QUrl("https://localhost:4443") << "PUT" << 200;
+    QTest::newRow("invalid") << ushort(8080) << false << QUrl("") << QUrl("http://localhost:8080") << "GET" << 404;
+    QTest::newRow("valid") << ushort(8080) << false << QUrl("") << QUrl("http://localhost:8080") << "PUT" << 200;
+    QTest::newRow("valid secure") << ushort(4443) << true << QUrl(":/cute/mock/ssl/cert/localhost.crt")
+                                  << QUrl("https://localhost:4443") << "PUT" << 200;
 }
 
 void SessionTestCase::testPutOnline()
 {
     QFETCH(ushort, port);
     QFETCH(bool, secure);
-    QFETCH(QString, certificate);
+    QFETCH(QUrl, certificate);
     QFETCH(QUrl, server);
     QFETCH(QString, method);
     QFETCH(int, statusCode);
@@ -172,21 +175,22 @@ void SessionTestCase::testDeleteOnline_data()
 {
     QTest::addColumn<ushort>("port");
     QTest::addColumn<bool>("secure");
-    QTest::addColumn<QString>("certificate");
+    QTest::addColumn<QUrl>("certificate");
     QTest::addColumn<QUrl>("server");
     QTest::addColumn<QString>("method");
     QTest::addColumn<int>("statusCode");
 
-    QTest::newRow("invalid") << ushort(8080) << false << "" << QUrl("http://localhost:8080") << "PUT" << 404;
-    QTest::newRow("valid") << ushort(8080) << false << "" << QUrl("http://localhost:8080") << "DELETE" << 200;
-    QTest::newRow("valid secure") << ushort(4443) << true << ":/cute/mock/ssl/cert/localhost.crt" << QUrl("https://localhost:4443") << "DELETE" << 200;
+    QTest::newRow("invalid") << ushort(8080) << false << QUrl("") << QUrl("http://localhost:8080") << "PUT" << 404;
+    QTest::newRow("valid") << ushort(8080) << false << QUrl("") << QUrl("http://localhost:8080") << "DELETE" << 200;
+    QTest::newRow("valid secure") << ushort(4443) << true << QUrl(":/cute/mock/ssl/cert/localhost.crt")
+                                  << QUrl("https://localhost:4443") << "DELETE" << 200;
 }
 
 void SessionTestCase::testDeleteOnline()
 {
     QFETCH(ushort, port);
     QFETCH(bool, secure);
-    QFETCH(QString, certificate);
+    QFETCH(QUrl, certificate);
     QFETCH(QUrl, server);
     QFETCH(QString, method);
     QFETCH(int, statusCode);

@@ -1,7 +1,8 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QFile>
+#include <QSslConfiguration>
 #include <QSslCertificate>
+#include <QFile>
 #include "reply.h"
 #include "session.h"
 
@@ -9,7 +10,6 @@ Session::Session(const QUrl &server, QNetworkAccessManager *network, QObject *pa
     : QObject(parent)
     , m_network(network)
     , m_server(server)
-    , m_sslConfiguration(QSslConfiguration::defaultConfiguration())
 {
 }
 
@@ -20,22 +20,22 @@ const QUrl &Session::getServer() const
 
 Reply *Session::get(const QUrl &uri, const QMap<QByteArray, QByteArray> &headers)
 {
-    return new Reply(m_network->get(createRequest(uri, headers)), this);
+    return createReply(m_network->get(createRequest(uri, headers)));
 }
 
 Reply *Session::post(const QUrl &uri, const QByteArray &payload, const QMap<QByteArray, QByteArray> &headers)
 {
-    return new Reply(m_network->post(createRequest(uri, headers), payload), this);
+    return createReply(m_network->post(createRequest(uri, headers), payload));
 }
 
 Reply *Session::put(const QUrl &uri, const QByteArray &payload, const QMap<QByteArray, QByteArray> &headers)
 {
-    return new Reply(m_network->put(createRequest(uri, headers), payload), this);
+    return createReply(m_network->put(createRequest(uri, headers), payload));
 }
 
 Reply *Session::deleteResource(const QUrl &uri, const QMap<QByteArray, QByteArray> &headers)
 {
-    return new Reply(m_network->deleteResource(createRequest(uri, headers)), this);
+    return createReply(m_network->deleteResource(createRequest(uri, headers)));
 }
 
 QUrl Session::completeUri(const QUrl &uri) const
@@ -46,21 +46,30 @@ QUrl Session::completeUri(const QUrl &uri) const
 QNetworkRequest Session::createRequest(const QUrl &uri, const QMap<QByteArray, QByteArray> &headers) const
 {
     QNetworkRequest request(completeUri(uri));
-
     for (auto header : headers.toStdMap())
        request.setRawHeader(header.first, header.second);
-
-    request.setSslConfiguration(m_sslConfiguration);
-
     return request;
 }
 
-void Session::setupCaCertificateFile(const QString &certificateFile)
+Reply *Session::createReply(QNetworkReply *networkReply)
+{
+    Reply *reply = new Reply(networkReply, this);
+    connect(reply, &Reply::networkError, this, &Session::networkError);
+    return reply;
+}
+
+void Session::setupCaCertificateFile(const QUrl &certificateFile)
 {
     if (certificateFile.isEmpty())
         return;
 
-    QFile fileResource(certificateFile);
-    if (fileResource.open(QFile::ReadOnly))
-        m_sslConfiguration.setCaCertificates({QSslCertificate(&fileResource)});
+    const QString filePath = certificateFile.scheme() == "qrc" ? certificateFile.toString().remove(0,3) // SessionTestCase
+                                                               : certificateFile.toLocalFile();
+    QFile fileResource(filePath);
+    if (fileResource.open(QFile::ReadOnly)) {
+        m_network->clearConnectionCache();
+        QSslConfiguration sslConfiguration = QSslConfiguration::defaultConfiguration();
+        sslConfiguration.setCaCertificates({QSslCertificate(&fileResource)});
+        QSslConfiguration::setDefaultConfiguration(sslConfiguration);
+    }
 }
