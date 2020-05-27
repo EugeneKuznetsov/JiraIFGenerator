@@ -4,8 +4,6 @@ from common.errors import ParserException
 
 
 class ResourceParser:
-    __document = None
-
     def __init__(self, wadl_file: str):
         try:
             self.__document = parse(wadl_file)

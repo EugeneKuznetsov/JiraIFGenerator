@@ -1,11 +1,7 @@
 class Bundle:
-    __common_paths = []
-    __base_path = ''
+    __common_paths = ['api/2/', 'auth/1/', 'agile/1.0/']
 
-    def __init__(self, base_path: str = '/rest/', common_paths=None):
-        if common_paths is None:
-            common_paths = ['api/2/', 'auth/1/', 'agile/1.0/']
-        self.__common_paths = common_paths
+    def __init__(self, base_path: str = '/rest/'):
         self.__base_path = base_path
 
     def pack(self, resources: list) -> dict:

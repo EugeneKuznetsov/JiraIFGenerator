@@ -3,19 +3,6 @@ from common.errors import UnsupportedParameterTypeException, UnsupportedParamete
 
 
 class Endpoint:
-    header_filename = ''
-    source_filename = ''
-    cmake_filename = ''
-    header_content = ''
-    source_content = ''
-    cmake_content = ''
-    class_name = ''
-    cmake_var = ''
-    __methods = []
-    __generator_version = {'major': 0, 'minor': 0}
-    __framework_path = ''
-    __output_dir = ''
-
     def __init__(self, name: str, methods: list, version: dict, framework_path: str, output_dir: str, class_prefix: str):
         self.__generator_version = version
         self.__methods = methods

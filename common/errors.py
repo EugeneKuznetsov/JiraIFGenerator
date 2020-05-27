@@ -1,7 +1,4 @@
 class GeneratorException(Exception):
-    __code = 1
-    __text = ''
-
     def __init__(self, text: str = '', code: int = 1):
         super().__init__(text)
         self.__code = code
