@@ -80,6 +80,5 @@ Reply *Endpoint::adoptReply(Reply *reply)
 {
     reply->setParent(this);
     connect(reply, &Reply::destroy, this, &Endpoint::deleteLater);
-    connect(reply, &Reply::networkError, m_session, &Session::networkError);
     return reply;
 }

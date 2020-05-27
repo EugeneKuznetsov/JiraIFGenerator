@@ -15,7 +15,7 @@ public:
 signals:
     void ready(const int statusCode, const QByteArray &data);
     void destroy();
-    void networkError(const QString &errorString);
+    void networkError(const QString &errorString, const bool sslError);
 
 private slots:
     void onReady();

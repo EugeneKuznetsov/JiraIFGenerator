@@ -10,11 +10,13 @@ Reply::Reply(QNetworkReply *networkReply, QObject *parent)
 
     // https://wiki.qt.io/New_Signal_Slot_Syntax#Overload
     void (QNetworkReply:: *errorSignal)(QNetworkReply::NetworkError) = &QNetworkReply::error;
-    connect(networkReply, errorSignal, this, [this, networkReply](QNetworkReply::NetworkError) {
+    connect(networkReply, errorSignal, [this, networkReply](QNetworkReply::NetworkError) {
         // we are interested only in network layer and proxy errors
         // as of Qt 5.14, they are defined before ContentAccessDenied literal
-        if (networkReply->error() < QNetworkReply::ContentAccessDenied)
-            emit networkError(m_networkReply->errorString());
+        if (networkReply->error() < QNetworkReply::ContentAccessDenied) {
+            const bool sslError = QNetworkReply::SslHandshakeFailedError == networkReply->error();
+            emit networkError(m_networkReply->errorString(), sslError);
+        }
     });
     connect(networkReply, &QNetworkReply::finished, this, &Reply::onReady);
 }
